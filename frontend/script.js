@@ -1,7 +1,7 @@
-
+const API_BASE ="https://peterson-flashsale.onrender.com";
 async function loadProducts(){
   try{
-    const res = await fetch('/api/products');
+    const res = await fetch('${API_BASE}/api/products');
     const products = await res.json();
     const grid = document.getElementById('productsGrid');
     grid.innerHTML='';
@@ -33,7 +33,7 @@ document.addEventListener('click', function(e){
 
 async function checkoutItems(items){
   try{
-    const res = await fetch('/api/orders/checkout', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ items }) });
+    const res = await fetch('${API_BASE}/api/orders/checkout', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ items }) });
     const data = await res.json();
     if(data.url) window.location = data.url;
     else alert('Checkout failed');
