@@ -75,12 +75,10 @@ function requireAuth(req,res,next){
     return res.status(403).json({error:'Forbidden'});
   }catch(e){ return res.status(401).json({error:'Invalid token'}) }
 }
-const app = express();
-app.use(cors());
-app.use(express.json());
+
 app.use('/admin/static', express.static(path.join(__dirname, 'admin')));
 app.get('/admin', (req,res)=>{ res.sendFile(path.join(__dirname,'admin','index.html')); });
-app.get('/api/products', ...);
+
 app.post('/api/auth/login', async (req,res)=>{
   const { email, password } = req.body;
   if(email === ADMIN_EMAIL && password === ADMIN_PASSWORD){
