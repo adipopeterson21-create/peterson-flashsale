@@ -1,0 +1,36 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 bucket and IAM user for uploads (minimal, for demo purposes)
+Parameters:
+  BucketName:
+    Type: String
+    Description: S3 bucket name
+Resources:
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicRead
+  UploadUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Sub '${BucketName}-uploader'
+  UploadUserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub '${BucketName}-policy'
+      Users: [ !Ref UploadUser ]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetObject
+              - s3:PutObjectAcl
+            Resource: !Sub 'arn:aws:s3:::${BucketName}/*'
+Outputs:
+  BucketName:
+    Value: !Ref BucketName
+    Export:
+      Name: !Sub '${AWS::StackName}-BucketName'

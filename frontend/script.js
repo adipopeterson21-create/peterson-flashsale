@@ -1,0 +1,1 @@
+// placeholder script.js — product rendering and API calls are handled here.
