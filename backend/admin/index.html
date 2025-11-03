@@ -1,0 +1,96 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FlashSale Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{font-family:Inter,Arial,sans-serif;background:#010114;color:#e6eef8;padding:18px}
+    .card{background:linear-gradient(180deg,#071026,#0e1530);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.6);max-width:1000px;margin:18px auto}
+    input,textarea{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#e6eef8}
+    button{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,#06b6d4,#8b5cf6);color:#041025;font-weight:700}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    .muted{color:#9aa7c7}
+    .product{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 8px">Admin — FlashSale (Neon Dark)</h2>
+    <div id="loginBox">
+      <input id="email" placeholder="admin email" value="admin@flashsale.local">
+      <input id="password" placeholder="password" value="Admin@1234" type="password">
+      <button id="loginBtn">Login</button>
+    </div>
+
+    <div id="dashboard" style="display:none">
+      <h3>Products</h3>
+      <div class="grid">
+        <div>
+          <form id="productForm">
+            <input id="pTitle" placeholder="Title" required>
+            <input id="pPrice" placeholder="Price (USD)" required>
+            <input id="pStock" placeholder="Stock" value="10" required>
+            <textarea id="pDesc" placeholder="Description"></textarea>
+            <input type="file" id="pImage">
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button type="submit">Add / Update</button>
+              <button type="button" id="logoutBtn" style="background:#223">Logout</button>
+            </div>
+          </form>
+        </div>
+        <div>
+          <div id="productsList" class="muted"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+let token = null;
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const email=document.getElementById('email').value, password=document.getElementById('password').value;
+  const res = await fetch('/api/auth/login', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email,password})});
+  if(res.ok){ const data=await res.json(); token = data.token; document.getElementById('loginBox').style.display='none'; document.getElementById('dashboard').style.display='block'; loadProducts(); }
+  else alert('Login failed');
+});
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{ token=null; location.reload(); });
+
+async function loadProducts(){
+  const res = await fetch('/api/products'); const list = await res.json();
+  const el = document.getElementById('productsList'); el.innerHTML='';
+  list.forEach(p=>{
+    const div = document.createElement('div'); div.className='product';
+    div.innerHTML = `<strong style="color:#e6eef8">${p.title}</strong><div style="color:#9aa7c7">${p.description||''}</div><div style="margin-top:6px"><button data-id="${p.id}" class="editBtn">Edit</button> <button data-id="${p.id}" class="delBtn" style="background:#c62828">Delete</button></div>`;
+    el.appendChild(div);
+  });
+  document.querySelectorAll('.delBtn').forEach(b=>b.addEventListener('click', async (e)=>{
+    if(!confirm('Delete?')) return;
+    const id=e.currentTarget.dataset.id;
+    await fetch('/api/products/'+id, { method:'DELETE', headers:{ 'Authorization': 'Bearer '+token } });
+    loadProducts();
+  }));
+  document.querySelectorAll('.editBtn').forEach(b=>b.addEventListener('click', async (e)=>{
+    const id=e.currentTarget.dataset.id;
+    const res = await fetch('/api/products'); const list = await res.json();
+    const p=list.find(x=>x.id===id);
+    document.getElementById('pTitle').value=p.title; document.getElementById('pPrice').value=(p.price_cents/100).toFixed(2); document.getElementById('pStock').value=p.stock; document.getElementById('pDesc').value=p.description;
+  }));
+}
+
+document.getElementById('productForm').addEventListener('submit', async (ev)=>{
+  ev.preventDefault();
+  const fd = new FormData();
+  fd.append('title', document.getElementById('pTitle').value);
+  fd.append('price', document.getElementById('pPrice').value);
+  fd.append('stock', document.getElementById('pStock').value);
+  fd.append('description', document.getElementById('pDesc').value);
+  const f = document.getElementById('pImage').files[0]; if(f) fd.append('image', f);
+  const res = await fetch('/api/products', { method:'POST', headers: { 'Authorization': 'Bearer '+token }, body: fd });
+  if(res.ok){ alert('Saved'); document.getElementById('productForm').reset(); loadProducts(); } else { alert('Error saving product'); }
+});
+</script>
+</body>
+</html>
