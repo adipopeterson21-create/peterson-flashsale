@@ -1,0 +1,97 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FlashSale — Neon Market</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-row">
+      <div class="brand">
+        <div class="logo">FS</div>
+        <div class="brand-text">
+          <div class="title">FlashSale</div>
+          <div class="tag">Neon Market</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#products">Products</a>
+        <a href="#donate">Donate</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="actions">
+        <button id="adminLoginBtn" class="btn btn-outline">Admin</button>
+        <a id="whatsappBtn" class="whatsapp" href="https://wa.me/254700000000?text=Hi%20FlashSale" target="_blank" rel="noreferrer">Chat</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero neon">
+      <div class="container hero-grid">
+        <div class="hero-left">
+          <h1 class="hero-title">Shop local. <span class="accent">Glow</span> everywhere.</h1>
+          <p class="lead">FlashSale brings curated local goods with fast checkout and glowing deals.</p>
+          <div class="cta-row">
+            <a href="#products" class="btn btn-primary">Shop Featured</a>
+            <button id="openDonate" class="btn btn-ghost">Support</button>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-card">
+            <img src="assets/hero-dark.jpg" alt="Products preview" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" class="section">
+      <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div id="productsGrid" class="products-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="donate" class="section light-card">
+      <div class="container donate-grid">
+        <div class="donate-left">
+          <h3>Support the platform</h3>
+          <p class="muted">Your donations keep the marketplace alive.</p>
+          <div class="donation-progress">
+            <div id="donationBar" class="donation-fill" style="width:0%"></div>
+          </div>
+          <div class="donation-stats"><span id="donRaised">$0</span> raised</div>
+        </div>
+        <form id="donationForm" class="donation-form">
+          <label>Amount (USD)</label>
+          <input type="number" id="donAmount" min="1" value="10" required>
+          <label>Your name (optional)</label>
+          <input id="donName" placeholder="Jane Doe">
+          <div class="donation-actions">
+            <button class="btn btn-primary" type="submit">Donate</button>
+            <button class="btn btn-outline" id="donReset" type="button">Reset</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="contact" class="section small">
+      <div class="container">
+        <h2 class="section-title">Contact</h2>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>© 2025 FlashSale — Neon</div>
+      <div class="links"><a href="#donate">Donate</a> <a href="#contact">Contact</a></div>
+    </div>
+  </footer>
+</body>
+</html>
